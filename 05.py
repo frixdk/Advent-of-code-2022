@@ -48,8 +48,8 @@ def b_solver(input):
     for i in instructions:
         amount, stack_source, stack_destination = [int(x) for x in [i.split()[1], i.split()[3], i.split()[5]]]
 
-        stacks[stack_source] = stacks[stack_source], slice, slice
-        stacks[stack_destination].append(stacks[stack_source])
+        stacks[stack_destination].extend(stacks[stack_source][-amount:])
+        stacks[stack_source] = stacks[stack_source][:-amount]
 
     return ''.join([stack[-1] for _, stack in stacks.items()])
 
