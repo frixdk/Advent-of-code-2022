@@ -1,5 +1,5 @@
 from collections import defaultdict
-
+import math
 import click
 from aocd import data, lines, numbers
 from aocd import submit as aocd_submit
@@ -19,22 +19,7 @@ def a_solver(input):
         for y, col in enumerate(row):
             grid[(x, y)] = int(col)
 
-    #print(grid)
-
     visible = set()
-
-    # top_edge = [grid[(0, y)] for y in range(len(input[0]))]
-
-    # bottom_edge = [grid[(len(input)-1, y)] for y in range(len(input[0]))]
-
-    # print(top_edge)
-    # print(bottom_edge)
-
-    # left_edge = [grid[(x, 0)] for x in range(len(input))]
-    # right_edge = left_edge = [grid[(x, len(input[0])-1)] for x in range(len(input))]
-
-    # print(left_edge)
-    # print(right_edge)
 
     # going down
     tallest = [-1] * len(input[0])
@@ -44,7 +29,6 @@ def a_solver(input):
             if tree > tallest[y]:
                 visible.add((x, y))
                 tallest[y] = tree
-            print(tallest, visible)
 
     # going up
     tallest = [-1] * len(input[0])
@@ -54,8 +38,8 @@ def a_solver(input):
             if tree > tallest[y]:
                 visible.add((x, y))
                 tallest[y] = tree
-            print(tallest, visible)
 
+    # going right
     tallest = [-1] * len(input)
     for y in range(len(input[0])):
         r = [grid[(x, y)] for x in range(len(input))]
@@ -63,9 +47,8 @@ def a_solver(input):
             if tree > tallest[x]:
                 visible.add((x, y))
                 tallest[x] = tree
-        print(r, tallest, visible)
 
-
+    # going left
     tallest = [-1] * len(input)
     for y in reversed(range(len(input[0]))):
         r = [grid[(x, y)] for x in range(len(input))]
@@ -73,13 +56,49 @@ def a_solver(input):
             if tree > tallest[x]:
                 visible.add((x, y))
                 tallest[x] = tree
-        print(r, tallest, visible)
 
     return len(visible)
 
 
 def b_solver(input):
-    pass
+    grid = {}
+    for y, row in enumerate(input):
+        for x, col in enumerate(row):
+            grid[(x, y)] = int(col)
+
+    scenics = []
+
+    for tree, height in grid.items():
+        scenic = [0] * 4
+        x, y = tree
+
+        # right
+        for mx in range(x+1, len(input[0])):
+            scenic[0] += 1
+            if grid[(mx, y)] >= height:
+                break
+
+        # left
+        for mx in range(x-1, -1, -1):
+            scenic[1] += 1
+            if grid[(mx, y)] >= height:
+                break
+
+        # down
+        for my in range(y+1, len(input)):
+            scenic[2] += 1
+            if grid[(x, my)] >= height:
+                break
+
+        # left
+        for my in range(y-1, -1, -1):
+            scenic[3] += 1
+            if grid[(x, my)] >= height:
+                break
+
+        scenics.append(math.prod(scenic))
+
+    return max(scenics)
 
 
 @advent.command()
@@ -110,3 +129,4 @@ def submit():
 
 if __name__ == "__main__":
     advent()
+
