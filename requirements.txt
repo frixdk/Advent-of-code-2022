@@ -1,3 +1,4 @@
 click
 aocd
 browser-cookie3
+sympy
