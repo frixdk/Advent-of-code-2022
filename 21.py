@@ -1,10 +1,8 @@
-import math
-from collections import defaultdict
-
 import click
+import sympy
 from aocd import data, lines, numbers
 from aocd import submit as aocd_submit
-from sympy import Eq, solve, sympify
+from sympy import sympify
 
 CONTEXT_SETTINGS = dict(help_option_names=['-h', '--help'])
 
@@ -21,8 +19,6 @@ def a_solver(input):
     for i in input:
         monkey, job = i.split(":")
         monkeys[monkey] = job
-
-    print(monkeys)
 
     root = monkeys['root']
 
@@ -46,8 +42,6 @@ def b_solver(input):
         monkey, job = i.split(":")
         monkeys[monkey] = job
 
-    print(monkeys)
-
     root = monkeys['root'].replace('+', '=')
 
     while(True):
@@ -64,13 +58,7 @@ def b_solver(input):
             break
 
     sympy_eq = sympify("Eq(" + root.replace("=", ",") + ")")
-
-    print(sympy_eq)
-
-    solve(sympy_eq)
-    # for some reason this doesnt work and the click lib throws an error??
-    # i took the equation and solved with wolfram alpha
-    return 42
+    return sympy.solve(sympy_eq)[0]
 
 
 @advent.command()
